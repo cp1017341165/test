@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陈培 & 温家媚 · 婚礼邀请函</title>
+    <style>
+        /* ========== 基础样式 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-pink: #FFB6C1;
+            --deep-pink: #FF69B4;
+            --gold: #D4AF37;
+            --light-gold: #F4E4BC;
+            --cream: #FFF8DC;
+            --dark-red: #8B0000;
+            --text-dark: #333;
+            --text-light: #666;
+        }
+
+        body {
+            font-family: 'Georgia', '微软雅黑', serif;
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 50%, #FFF8DC 100%);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ========== 开场遮罩 ========== */
+        .cover-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 50%, #FFFACD 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .cover-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .cover-content {
+            text-align: center;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .cover-content h1 {
+            font-size: 2.5rem;
+            color: var(--dark-red);
+            margin-bottom: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.3rem;
+        }
+
+        .cover-content .names {
+            font-size: 3.5rem;
+            color: var(--dark-red);
+            margin: 1.5rem 0;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.2);
+        }
+
+        .cover-content .date {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            letter-spacing: 0.2rem;
+        }
+
+        .open-btn {
+            background: linear-gradient(135deg, var(--deep-pink) 0%, var(--primary-pink) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.2rem;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+        }
+
+        /* ========== 花瓣特效 ========== */
+        .petal {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            background: var(--primary-pink);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 999;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            display: none;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .main-content.show {
+            display: block;
+            animation: fadeIn 1s ease;
+        }
+
+        /* ========== 各个区块 ========== */
+        .section {
+            padding: 4rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--dark-red);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 1rem auto;
+        }
+
+        /* ========== 新人信息区 ========== */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #FFF5F5 0%, #FFE4E1 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 182, 193, 0.2) 0%, transparent 70%);
+        }
+
+        .couple-names {
+            font-size: 4rem;
+            color: var(--dark-red);
+            margin: 1rem 0;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.2);
+            animation: fadeInUp 1s ease;
+        }
+
+        .couple-names .ampersand {
+            display: inline-block;
+            margin: 0 1.5rem;
+            color: var(--gold);
+            font-size: 3rem;
+        }
+
+        .wedding-date {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            margin: 1rem 0;
+            letter-spacing: 0.3rem;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 3rem;
+            color: var(--deep-pink);
+            font-weight: 600;
+            display: block;
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* ========== 邀请词区 ========== */
+        .invitation-section {
+            background: white;
+            padding: 4rem 2rem;
+        }
+
+        .invitation-text {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: var(--text-dark);
+        }
+
+        .invitation-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight {
+            color: var(--dark-red);
+            font-weight: 600;
+        }
+
+        /* ========== 照片展示区 ========== */
+        .photo-section {
+            background: linear-gradient(180deg, #FFF5F5 0%, #FFF0F5 100%);
+            padding: 4rem 1.5rem;
+        }
+
+        .photo-carousel {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .photo-slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .photo-slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-slide .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 2rem 1rem 1rem;
+            font-size: 1rem;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 1rem;
+        }
+
+        .carousel-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-pink);
+            opacity: 0.5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        /* ========== 视频区 ========== */
+        .video-section {
+            background: white;
+            padding: 4rem 1.5rem;
+        }
+
+        .video-container {
+            max-width: 700px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            background: linear-gradient(135deg, #FFD1DC 0%, #FFE4E1 100%);
+        }
+
+        .play-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--deep-pink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .play-icon::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 15px 0 15px 25px;
+            border-color: transparent transparent transparent white;
+            margin-left: 5px;
+        }
+
+        .video-text {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* ========== 婚礼详情区 ========== */
+        .details-section {
+            background: linear-gradient(180deg, #FFF5F5 0%, #FFFACD 100%);
+            padding: 4rem 1.5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .detail-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-title {
+            font-size: 1.1rem;
+            color: var(--dark-red);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .detail-content {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ========== 音乐控制 ========== */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.9);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .music-control.show {
+            display: flex;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+
+        .music-control.playing {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .music-icon {
+            width: 24px;
+            height: 24px;
+            position: relative;
+        }
+
+        .music-icon::before,
+        .music-icon::after {
+            content: '';
+            position: absolute;
+            background: var(--deep-pink);
+        }
+
+        .music-icon::before {
+            width: 3px;
+            height: 12px;
+            left: 6px;
+            bottom: 0;
+        }
+
+        .music-icon::after {
+            width: 12px;
+            height: 3px;
+            left: 6px;
+            bottom: 9px;
+            border-radius: 0 3px 3px 0;
+        }
+
+        /* ========== 底部 ========== */
+        .footer {
+            background: linear-gradient(135deg, var(--dark-red) 0%, #6B0000 100%);
+            color: white;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        .footer .couple-names-footer {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.3rem;
+        }
+
+        /* ========== 动画 ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========== 响应式设计 ========== */
+        @media (max-width: 768px) {
+            .couple-names {
+                font-size: 2.5rem;
+            }
+
+            .couple-names .ampersand {
+                margin: 0 1rem;
+                font-size: 2rem;
+            }
+
+            .countdown-number {
+                font-size: 2rem;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 3rem 1rem;
+            }
+
+            .photo-slide img {
+                height: 300px;
+            }
+
+            .video-placeholder {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cover-content .names {
+                font-size: 2.5rem;
+            }
+
+            .couple-names {
+                font-size: 2rem;
+            }
+
+            .countdown {
+                gap: 1rem;
+            }
+
+            .countdown-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 开场遮罩 ========== -->
+    <div class="cover-overlay" id="cover">
+        <div class="cover-content">
+            <h1>我们结婚啦</h1>
+            <div class="names">陈培 & 温家媚</div>
+            <div class="date">2026年8月23日</div>
+            <button class="open-btn" id="openBtn">💌 点击开启邀请函</button>
+        </div>
+    </div>
+
+    <!-- ========== 音乐控制 ========== -->
+    <div class="music-control" id="musicControl">
+        <div class="music-icon"></div>
+    </div>
+
+    <!-- ========== 主内容区 ========== -->
+    <div class="main-content" id="mainContent">
+        <!-- 新人信息区 -->
+        <section class="hero-section section">
+            <div class="animate-on-scroll">
+                <h2 class="section-title">我们结婚啦</h2>
+            </div>
+            <div class="couple-names animate-on-scroll">
+                陈培 <span class="ampersand">&</span> 温家媚
+            </div>
+            <div class="wedding-date animate-on-scroll">
+                2026年8月23日 · 星期日
+            </div>
+            <div class="countdown animate-on-scroll" id="countdown">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="days">00</span>
+                    <span class="countdown-label">天</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="hours">00</span>
+                    <span class="countdown-label">时</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="minutes">00</span>
+                    <span class="countdown-label">分</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="seconds">00</span>
+                    <span class="countdown-label">秒</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 邀请词区 -->
+        <section class="invitation-section section">
+            <h2 class="section-title animate-on-scroll">诚挚邀请</h2>
+            <div class="invitation-text animate-on-scroll">
+                <p>亲爱的朋友：</p>
+                <p>在这个美好的季节里，我们即将携手步入婚姻的殿堂。</p>
+                <p>谨定于 <span class="highlight">2026年8月23日</span>（星期日）举行婚礼，</p>
+                <p>诚挚邀请您出席我们的婚礼，与我们共同分享这份喜悦。</p>
+                <p>您的到来，将是我们最大的荣幸！</p>
+            </div>
+        </section>
+
+        <!-- 照片展示区 -->
+        <section class="photo-section section">
+            <h2 class="section-title animate-on-scroll">甜蜜瞬间</h2>
+            <div class="photo-carousel animate-on-scroll">
+                <div class="photo-container" id="photoContainer">
+                    <div class="photo-slide">
+                        <img src="assets/天空.png" alt="天空">
+                        <div class="photo-caption">我们的故事，从这里开始</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/斑马.png" alt="斑马">
+                        <div class="photo-caption">执子之手，与子偕老</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/擎天柱.webp" alt="擎天柱">
+                        <div class="photo-caption">愿得一人心，白首不相离</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/坦克.webp" alt="坦克">
+                        <div class="photo-caption">最美的时光，遇见最好的你</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/坦克1.webp" alt="坦克1">
+                        <div class="photo-caption">相守一生，相伴永远</div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-btn" id="prevBtn">❮</button>
+                    <button class="carousel-btn" id="nextBtn">❯</button>
+                </div>
+            </div>
+            <div class="carousel-dots" id="carouselDots">
+                <span class="dot active" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+                <span class="dot" data-index="3"></span>
+                <span class="dot" data-index="4"></span>
+            </div>
+        </section>
+
+        <!-- 视频区 -->
+        <section class="video-section section">
+            <h2 class="section-title animate-on-scroll">爱情视频</h2>
+            <div class="video-container animate-on-scroll">
+                <video id="weddingVideo" controls preload="metadata" style="width: 100%; display: block;">
+                    <source src="assets/test.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </section>
+
+        <!-- 婚礼详情区 -->
+        <section class="details-section section">
+            <h2 class="section-title animate-on-scroll">婚礼详情</h2>
+            <div class="details-grid">
+                <div class="detail-card animate-on-scroll">
+                    <div class="detail-icon">📅</div>
+                    <div class="detail-title">婚礼日期</div>
+                    <div class="detail-content">
+                        2026年8月23日<br>
+                        星期日
+                    </div>
+                </div>
+                <div class="detail-card animate-on-scroll">
+                    <div class="detail-icon">⏰</div>
+                    <div class="detail-title">仪式时间</div>
+                    <div class="detail-content">
+                        上午 11:30<br>
+                        恭候光临
+                    </div>
+                </div>
+                <div class="detail-card animate-on-scroll">
+                    <div class="detail-icon">📍</div>
+                    <div class="detail-title">婚礼地点</div>
+                    <div class="detail-content">
+                        四川省遂宁市<br>
+                        蓬溪县赤诚酒店<br>
+                        <a href="https://uri.amap.com/search?keyword=蓬溪县赤诚酒店&callnative=1"
+                           target="_blank"
+                           style="display: inline-block; margin-top: 10px; color: #FF69B4; font-size: 0.9rem; text-decoration: none;">
+                            🗺️ 点击导航
+                        </a>
+                    </div>
+                </div>
+                <div class="detail-card animate-on-scroll">
+                    <div class="detail-icon">🎊</div>
+                    <div class="detail-title">宴会厅</div>
+                    <div class="detail-content">
+                        一楼宴会厅<br>
+                        欢迎莅临
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 底部 -->
+        <footer class="footer">
+            <div class="couple-names-footer">陈培 & 温家媚</div>
+            <p>2026年8月23日</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+                期待您的到来 ❤️
+            </p>
+        </footer>
+    </div>
+
+    <!-- ========== 音频 ========== -->
+    <audio id="bgMusic" loop>
+        <source src="assets/知我.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ========== 开场交互 ==========
+        const cover = document.getElementById('cover');
+        const openBtn = document.getElementById('openBtn');
+        const mainContent = document.getElementById('mainContent');
+        const musicControl = document.getElementById('musicControl');
+        const bgMusic = document.getElementById('bgMusic');
+
+        openBtn.addEventListener('click', function() {
+            // 隐藏封面
+            cover.classList.add('hidden');
+
+            // 显示主内容
+            setTimeout(() => {
+                mainContent.classList.add('show');
+                musicControl.classList.add('show');
+
+                // 尝试播放音乐
+                playMusic();
+
+                // 创建花瓣特效
+                createPetals();
+
+                // 启动倒计时
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            }, 500);
+        });
+
+        // ========== 音乐控制 ==========
+        let isMusicPlaying = false;
+
+        function playMusic() {
+            bgMusic.play().then(() => {
+                isMusicPlaying = true;
+                musicControl.classList.add('playing');
+            }).catch(() => {
+                console.log('自动播放被阻止，需要用户交互');
+            });
+        }
+
+        musicControl.addEventListener('click', function() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                isMusicPlaying = false;
+                musicControl.classList.remove('playing');
+            } else {
+                playMusic();
+            }
+        });
+
+        // ========== 花瓣特效 ==========
+        function createPetals() {
+            const colors = ['#FFB6C1', '#FF69B4', '#FFC0CB', '#FFD1DC', '#FFE4E1'];
+
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    petal.className = 'petal';
+                    petal.style.left = Math.random() * 100 + 'vw';
+                    petal.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                    petal.style.animationDelay = Math.random() * 5 + 's';
+                    petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    petal.style.width = (Math.random() * 10 + 10) + 'px';
+                    petal.style.height = petal.style.width;
+                    petal.style.opacity = Math.random() * 0.4 + 0.3;
+                    document.body.appendChild(petal);
+
+                    // 动画结束后移除
+                    setTimeout(() => {
+                        petal.remove();
+                    }, 10000);
+                }, i * 300);
+            }
+
+            // 持续创建花瓣
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+                petal.style.width = (Math.random() * 10 + 10) + 'px';
+                petal.style.height = petal.style.width;
+                petal.style.opacity = Math.random() * 0.4 + 0.3;
+                document.body.appendChild(petal);
+
+                setTimeout(() => {
+                    petal.remove();
+                }, 10000);
+            }, 1000);
+        }
+
+        // ========== 倒计时 ==========
+        function updateCountdown() {
+            const weddingDate = new Date('2026-08-23T11:30:00');
+            const now = new Date();
+            const diff = weddingDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+        }
+
+        // ========== 照片轮播 ==========
+        const photoContainer = document.getElementById('photoContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dots = document.querySelectorAll('.dot');
+        let currentSlide = 0;
+        const totalSlides = 5;
+
+        function goToSlide(index) {
+            if (index < 0) index = totalSlides - 1;
+            if (index >= totalSlides) index = 0;
+
+            currentSlide = index;
+            photoContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // 更新指示点
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        prevBtn.addEventListener('click', () => {
+            goToSlide(currentSlide - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            goToSlide(currentSlide + 1);
+        });
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                goToSlide(parseInt(this.dataset.index));
+            });
+        });
+
+        // 自动轮播
+        setInterval(() => {
+            goToSlide(currentSlide + 1);
+        }, 5000);
+
+        // ========== 滚动动画 ==========
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        animateElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // ========== 初始化 ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // 强制滚动到顶部，防止 iframe 抢焦
+            window.scrollTo(0, 0);
+
+            // 预加载图片
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                const src = img.src;
+                const newImg = new Image();
+                newImg.src = src;
+            });
+
+            // ========== 视频播放时控制背景音乐音量 ==========
+            const weddingVideo = document.getElementById('weddingVideo');
+            const originalVolume = 0.5; // 背景音乐原始音量（50%）
+            const reducedVolume = 0.1; // 降低后的音量（10%）
+
+            // 设置初始音量
+            bgMusic.volume = originalVolume;
+
+            // 视频开始播放时
+            weddingVideo.addEventListener('play', function() {
+                // 降低背景音乐音量
+                bgMusic.volume = reducedVolume;
+            });
+
+            // 视频暂停时
+            weddingVideo.addEventListener('pause', function() {
+                // 恢复背景音乐音量
+                bgMusic.volume = originalVolume;
+            });
+
+            // 视频结束时
+            weddingVideo.addEventListener('ended', function() {
+                // 恢复背景音乐音量
+                bgMusic.volume = originalVolume;
+            });
+
+            // 视频进度拖动时（seeking）
+            weddingVideo.addEventListener('seeking', function() {
+                // 如果视频正在播放，保持低音量
+                if (!weddingVideo.paused) {
+                    bgMusic.volume = reducedVolume;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
