@@ -884,6 +884,99 @@
                 height: 120px;
             }
         }
+
+        /* ========== 祝福详情弹窗 ========== */
+        .wish-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: modalFadeIn 0.3s ease;
+            padding: 20px;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .wish-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .wish-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .wish-modal-close:hover {
+            background: #f5f5f5;
+            color: var(--text-dark);
+        }
+
+        .wish-modal-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            padding-right: 30px;
+        }
+
+        .wish-modal-author {
+            text-align: right;
+            color: var(--deep-pink);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* 长祝福语可点击提示 */
+        .ticker-item-long {
+            cursor: pointer;
+        }
+
+        .ticker-item-long:active {
+            background: rgba(255, 182, 193, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -1398,14 +1491,15 @@
             }
 
             // 创建滚动列表（复制一份实现无缝循环）
-            const wishesHTML = wishesData.map(wish => {
+            const wishesHTML = wishesData.map((wish, index) => {
                 // 截断过长的祝福语（最多显示 30 字）
                 let displayContent = wish.content;
-                if (displayContent.length > 30) {
+                const isLong = displayContent.length > 30;
+                if (isLong) {
                     displayContent = displayContent.substring(0, 30) + '...';
                 }
                 return `
-                <div class="ticker-item" title="${escapeHtml(wish.content)}">
+                <div class="ticker-item ${isLong ? 'ticker-item-long' : ''}" onclick="showWishDetail(${index})">
                     <span class="ticker-item-content">"${escapeHtml(displayContent)}"</span>
                     <span class="ticker-item-author">—— ${escapeHtml(wish.name)}</span>
                 </div>
@@ -1433,6 +1527,39 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // 显示完整祝福语
+        function showWishDetail(index) {
+            const wish = wishesData[index];
+            if (!wish) return;
+
+            // 创建弹窗
+            const modal = document.createElement('div');
+            modal.className = 'wish-modal';
+            modal.innerHTML = `
+                <div class="wish-modal-content">
+                    <div class="wish-modal-close" onclick="closeWishModal()">&times;</div>
+                    <div class="wish-modal-text">"${escapeHtml(wish.content)}"</div>
+                    <div class="wish-modal-author">—— ${escapeHtml(wish.name)}</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // 点击背景关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeWishModal();
+                }
+            });
+        }
+
+        // 关闭弹窗
+        function closeWishModal() {
+            const modal = document.querySelector('.wish-modal');
+            if (modal) {
+                modal.remove();
+            }
         }
 
         // 页面加载完成后获取祝福列表
