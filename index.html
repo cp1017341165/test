@@ -45,6 +45,32 @@
             align-items: center;
             justify-content: center;
             transition: opacity 1s ease, visibility 1s ease;
+            overflow: hidden;
+        }
+
+        .cover-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/封面背景.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.9);
+            transform: scale(1.1);
+            z-index: -1;
+        }
+
+        .cover-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: -1;
         }
 
         .cover-overlay.hidden {
@@ -63,6 +89,7 @@
             margin-bottom: 1rem;
             font-weight: 300;
             letter-spacing: 0.3rem;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
         }
 
         .cover-content .names {
@@ -70,7 +97,7 @@
             color: var(--dark-red);
             margin: 1.5rem 0;
             font-weight: 600;
-            text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.2);
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
         }
 
         .cover-content .date {
@@ -78,6 +105,7 @@
             color: var(--text-light);
             margin-bottom: 2rem;
             letter-spacing: 0.2rem;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
         }
 
         .open-btn {
@@ -982,6 +1010,7 @@
 <body>
     <!-- ========== 开场遮罩 ========== -->
     <div class="cover-overlay" id="cover">
+        <div class="cover-bg"></div>
         <div class="cover-content">
             <h1>我们结婚啦</h1>
             <div class="names">陈培 & 温家媚</div>
@@ -1046,24 +1075,44 @@
             <div class="photo-carousel animate-on-scroll">
                 <div class="photo-container" id="photoContainer">
                     <div class="photo-slide">
-                        <img src="assets/天空.png" alt="天空">
+                        <img src="assets/DSC01458.JPG" alt="甜蜜瞬间">
                         <div class="photo-caption">我们的故事，从这里开始</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/斑马.png" alt="斑马">
+                        <img src="assets/DSC01538.JPG" alt="甜蜜瞬间">
                         <div class="photo-caption">执子之手，与子偕老</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/擎天柱.webp" alt="擎天柱">
+                        <img src="assets/DSC01545.JPG" alt="甜蜜瞬间">
                         <div class="photo-caption">愿得一人心，白首不相离</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/坦克.webp" alt="坦克">
+                        <img src="assets/DSC01581.JPG" alt="甜蜜瞬间">
                         <div class="photo-caption">最美的时光，遇见最好的你</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/坦克1.webp" alt="坦克1">
+                        <img src="assets/DSC01692.JPG" alt="甜蜜瞬间">
                         <div class="photo-caption">相守一生，相伴永远</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/DSC01895.JPG" alt="甜蜜瞬间">
+                        <div class="photo-caption">爱的旅程，与你同行</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/DSC01951.JPG" alt="甜蜜瞬间">
+                        <div class="photo-caption">携手共度，每一个明天</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/DSC01991.JPG" alt="甜蜜瞬间">
+                        <div class="photo-caption">因为有你，生活更美好</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/DSC02022.JPG" alt="甜蜜瞬间">
+                        <div class="photo-caption">爱你，是我做过最好的事</div>
+                    </div>
+                    <div class="photo-slide">
+                        <img src="assets/DSC02030.JPG" alt="甜蜜瞬间">
+                        <div class="photo-caption">余生，请多指教</div>
                     </div>
                 </div>
                 <div class="carousel-controls">
@@ -1071,13 +1120,7 @@
                     <button class="carousel-btn" id="nextBtn">❯</button>
                 </div>
             </div>
-            <div class="carousel-dots" id="carouselDots">
-                <span class="dot active" data-index="0"></span>
-                <span class="dot" data-index="1"></span>
-                <span class="dot" data-index="2"></span>
-                <span class="dot" data-index="3"></span>
-                <span class="dot" data-index="4"></span>
-            </div>
+            <div class="carousel-dots" id="carouselDots"></div>
         </section>
 
         <!-- 视频区 -->
@@ -1172,7 +1215,7 @@
 
     <!-- ========== 音频 ========== -->
     <audio id="bgMusic" loop>
-        <source src="assets/知我.mp3" type="audio/mpeg">
+        <source src="assets/A_Little_Love.flac" type="audio/mpeg">
     </audio>
 
     <script>
@@ -1291,9 +1334,23 @@
         const photoContainer = document.getElementById('photoContainer');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        const dots = document.querySelectorAll('.dot');
+        const carouselDots = document.getElementById('carouselDots');
         let currentSlide = 0;
-        const totalSlides = 5;
+        const totalSlides = 10;
+
+        // 生成指示点
+        function initDots() {
+            carouselDots.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
+                dot.dataset.index = i;
+                dot.addEventListener('click', function() {
+                    goToSlide(parseInt(this.dataset.index));
+                });
+                carouselDots.appendChild(dot);
+            }
+        }
 
         function goToSlide(index) {
             if (index < 0) index = totalSlides - 1;
@@ -1303,6 +1360,7 @@
             photoContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
 
             // 更新指示点
+            const dots = document.querySelectorAll('.dot');
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === currentSlide);
             });
@@ -1316,16 +1374,13 @@
             goToSlide(currentSlide + 1);
         });
 
-        dots.forEach(dot => {
-            dot.addEventListener('click', function() {
-                goToSlide(parseInt(this.dataset.index));
-            });
-        });
+        // 初始化指示点
+        initDots();
 
         // 自动轮播
         setInterval(() => {
             goToSlide(currentSlide + 1);
-        }, 5000);
+        }, 4000);
 
         // ========== 滚动动画 ==========
         const animateElements = document.querySelectorAll('.animate-on-scroll');
