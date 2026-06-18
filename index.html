@@ -678,8 +678,16 @@
         }
 
         .wish-form textarea {
-            height: 120px;
+            height: 100px;
             resize: none;
+        }
+
+        .wish-form-hint {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
         }
 
         .wish-btn {
@@ -737,7 +745,7 @@
         }
 
         .ticker-content {
-            height: 200px;
+            height: 250px;
             overflow: hidden;
             position: relative;
         }
@@ -761,11 +769,8 @@
             padding: 12px 15px;
             border-bottom: 1px solid rgba(255, 182, 193, 0.2);
             font-size: 0.85rem;
-            line-height: 1.4;
+            line-height: 1.5;
             color: var(--text-dark);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .ticker-item:last-child {
@@ -774,12 +779,21 @@
 
         .ticker-item-content {
             color: var(--text-dark);
+            display: block;
+            word-break: break-all;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .ticker-item-author {
             color: var(--deep-pink);
             font-weight: 600;
-            margin-left: 5px;
+            display: block;
+            text-align: right;
+            margin-top: 4px;
+            font-size: 0.8rem;
         }
 
         .ticker-loading {
@@ -1036,7 +1050,8 @@
             <!-- 祝福输入表单 -->
             <div class="wish-form animate-on-scroll">
                 <input type="text" id="wishName" placeholder="您的姓名" maxlength="20">
-                <textarea id="wishContent" placeholder="写下您的祝福..." maxlength="200"></textarea>
+                <textarea id="wishContent" placeholder="写下您的祝福..." maxlength="50"></textarea>
+                <div class="wish-form-hint">最多 50 字</div>
                 <button class="wish-btn" onclick="sendWish()">
                     <span class="wish-btn-icon">💝</span>
                     <span>送出祝福</span>
@@ -1383,12 +1398,19 @@
             }
 
             // 创建滚动列表（复制一份实现无缝循环）
-            const wishesHTML = wishesData.map(wish => `
-                <div class="ticker-item">
-                    <span class="ticker-item-content">"${escapeHtml(wish.content)}"</span>
+            const wishesHTML = wishesData.map(wish => {
+                // 截断过长的祝福语（最多显示 30 字）
+                let displayContent = wish.content;
+                if (displayContent.length > 30) {
+                    displayContent = displayContent.substring(0, 30) + '...';
+                }
+                return `
+                <div class="ticker-item" title="${escapeHtml(wish.content)}">
+                    <span class="ticker-item-content">"${escapeHtml(displayContent)}"</span>
                     <span class="ticker-item-author">—— ${escapeHtml(wish.name)}</span>
                 </div>
-            `).join('');
+                `;
+            }).join('');
 
             // 复制一份用于无缝循环
             tickerContent.innerHTML = `
