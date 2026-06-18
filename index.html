@@ -632,6 +632,244 @@
                 font-size: 1.8rem;
             }
         }
+
+        /* ========== 祝福墙模块 ========== */
+        .wishes-section {
+            background: linear-gradient(180deg, #FFFACD 0%, #FFF5F5 50%, #FFE4E1 100%);
+            padding: 4rem 1.5rem 5rem;
+        }
+
+        .wishes-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-top: -1rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .wish-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.15);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .wish-form input,
+        .wish-form textarea {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 1rem;
+            border: 2px solid #FFD1DC;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .wish-form input:focus,
+        .wish-form textarea:focus {
+            outline: none;
+            border-color: var(--deep-pink);
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+        }
+
+        .wish-form textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .wish-btn {
+            background: linear-gradient(135deg, var(--deep-pink) 0%, #FF1493 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wish-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.6);
+        }
+
+        .wish-btn:active {
+            transform: translateY(0);
+        }
+
+        .wish-btn-icon {
+            font-size: 1.2rem;
+        }
+
+        /* ========== 祝福滚动条（固定右下角） ========== */
+        .wishes-ticker {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            z-index: 999;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .ticker-header {
+            background: linear-gradient(135deg, var(--deep-pink) 0%, #FF1493 100%);
+            color: white;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.1rem;
+        }
+
+        .ticker-content {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ticker-list {
+            position: absolute;
+            width: 100%;
+            animation: tickerScroll linear infinite;
+        }
+
+        @keyframes tickerScroll {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%);
+            }
+        }
+
+        .ticker-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.2);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ticker-item:last-child {
+            border-bottom: none;
+        }
+
+        .ticker-item-content {
+            color: var(--text-dark);
+        }
+
+        .ticker-item-author {
+            color: var(--deep-pink);
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .ticker-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .ticker-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        /* 发送成功动画 */
+        .wish-sent-success {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            animation: successPop 0.5s ease;
+            text-align: center;
+        }
+
+        .wish-sent-success .success-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .wish-sent-success .success-text {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+        }
+
+        @keyframes successPop {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .wishes-ticker {
+                width: 200px;
+                right: 10px;
+                bottom: 10px;
+            }
+
+            .ticker-content {
+                height: 150px;
+            }
+
+            .ticker-item {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+
+            .wish-form {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wishes-ticker {
+                width: 180px;
+                right: 8px;
+                bottom: 8px;
+            }
+
+            .ticker-content {
+                height: 120px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -789,6 +1027,30 @@
                 </div>
             </div>
         </section>
+
+        <!-- 祝福墙 -->
+        <section class="wishes-section section">
+            <h2 class="section-title animate-on-scroll">💕 祝福墙</h2>
+            <p class="wishes-subtitle animate-on-scroll">留下您的祝福，让爱传递</p>
+
+            <!-- 祝福输入表单 -->
+            <div class="wish-form animate-on-scroll">
+                <input type="text" id="wishName" placeholder="您的姓名" maxlength="20">
+                <textarea id="wishContent" placeholder="写下您的祝福..." maxlength="200"></textarea>
+                <button class="wish-btn" onclick="sendWish()">
+                    <span class="wish-btn-icon">💝</span>
+                    <span>送出祝福</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 祝福滚动条（固定在右下角） -->
+        <div class="wishes-ticker" id="wishesTicker">
+            <div class="ticker-header">💕 祝福墙</div>
+            <div class="ticker-content" id="tickerContent">
+                <div class="ticker-loading">加载中...</div>
+            </div>
+        </div>
 
         <!-- 底部 -->
         <footer class="footer">
@@ -1020,6 +1282,143 @@
                     bgMusic.volume = reducedVolume;
                 }
             });
+        });
+
+        // ========== 祝福墙功能 ==========
+        const WISHES_API = '/api/wishes';  // 使用 Pages Functions，相对路径
+        let wishesData = [];
+        let tickerAnimation = null;
+
+        // 发送祝福
+        async function sendWish() {
+            const nameInput = document.getElementById('wishName');
+            const contentInput = document.getElementById('wishContent');
+            const name = nameInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!name) {
+                alert('请输入您的姓名');
+                nameInput.focus();
+                return;
+            }
+
+            if (!content) {
+                alert('请输入祝福语');
+                contentInput.focus();
+                return;
+            }
+
+            // 禁用按钮防止重复提交
+            const btn = document.querySelector('.wish-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="wish-btn-icon">💝</span><span>发送中...</span>';
+
+            try {
+                const response = await fetch(WISHES_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, content })
+                });
+
+                if (response.ok) {
+                    // 清空输入
+                    nameInput.value = '';
+                    contentInput.value = '';
+
+                    // 显示成功提示
+                    showSuccessMessage();
+
+                    // 重新加载祝福列表
+                    await loadWishes();
+                } else {
+                    alert('发送失败，请稍后再试');
+                }
+            } catch (error) {
+                console.error('发送祝福失败:', error);
+                alert('发送失败，请检查网络连接');
+            } finally {
+                // 恢复按钮
+                btn.disabled = false;
+                btn.innerHTML = '<span class="wish-btn-icon">💝</span><span>送出祝福</span>';
+            }
+        }
+
+        // 显示成功提示
+        function showSuccessMessage() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'wish-sent-success';
+            successDiv.innerHTML = `
+                <div class="success-icon">💕</div>
+                <div class="success-text">祝福已送出！</div>
+            `;
+            document.body.appendChild(successDiv);
+
+            setTimeout(() => {
+                successDiv.remove();
+            }, 2000);
+        }
+
+        // 加载祝福列表
+        async function loadWishes() {
+            try {
+                const response = await fetch(WISHES_API);
+                wishesData = await response.json();
+                updateTicker();
+            } catch (error) {
+                console.error('加载祝福失败:', error);
+                const tickerContent = document.getElementById('tickerContent');
+                tickerContent.innerHTML = '<div class="ticker-empty">加载失败</div>';
+            }
+        }
+
+        // 更新滚动条
+        function updateTicker() {
+            const tickerContent = document.getElementById('tickerContent');
+
+            if (wishesData.length === 0) {
+                tickerContent.innerHTML = '<div class="ticker-empty">暂无祝福</div>';
+                return;
+            }
+
+            // 创建滚动列表（复制一份实现无缝循环）
+            const wishesHTML = wishesData.map(wish => `
+                <div class="ticker-item">
+                    <span class="ticker-item-content">"${escapeHtml(wish.content)}"</span>
+                    <span class="ticker-item-author">—— ${escapeHtml(wish.name)}</span>
+                </div>
+            `).join('');
+
+            // 复制一份用于无缝循环
+            tickerContent.innerHTML = `
+                <div class="ticker-list" id="tickerList">
+                    ${wishesHTML}
+                    ${wishesHTML}
+                </div>
+            `;
+
+            // 计算动画时长（根据祝福数量调整）
+            const tickerList = document.getElementById('tickerList');
+            const itemCount = wishesData.length;
+            const duration = itemCount * 5; // 每条5秒
+
+            tickerList.style.animationDuration = `${duration}s`;
+        }
+
+        // HTML 转义（防止 XSS）
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 页面加载完成后获取祝福列表
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWishes();
+
+            // 每 30 秒自动刷新
+            setInterval(loadWishes, 30000);
         });
     </script>
 </body>
