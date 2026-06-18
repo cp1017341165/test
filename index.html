@@ -53,6 +53,7 @@
 
         .loading-content {
             text-align: center;
+            padding: 20px;
         }
 
         .loading-ring {
@@ -73,13 +74,14 @@
 
         .loading-text {
             color: var(--text-light);
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin-bottom: 10px;
+            min-height: 20px;
         }
 
         .loading-progress {
             color: var(--deep-pink);
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: 600;
         }
 
@@ -1074,7 +1076,7 @@
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
             <div class="loading-ring"></div>
-            <div class="loading-text">加载中...</div>
+            <div class="loading-text">幸福载入中...</div>
             <div class="loading-progress" id="loadingProgress">0%</div>
         </div>
     </div>
@@ -1535,7 +1537,7 @@
             // 强制滚动到顶部，防止 iframe 抢焦
             window.scrollTo(0, 0);
 
-            // 预加载关键资源（封面背景）
+            // 按优先级加载资源
             preloadCriticalAssets();
 
             // ========== 视频播放时控制背景音乐音量 ==========
@@ -1573,94 +1575,115 @@
             });
         });
 
-        // ========== 预加载关键资源 ==========
+        // ========== 按优先级加载资源 ==========
         async function preloadCriticalAssets() {
             const loadingScreen = document.getElementById('loadingScreen');
             const loadingProgress = document.getElementById('loadingProgress');
+            const loadingText = document.querySelector('.loading-text');
             const cover = document.getElementById('cover');
 
-            // 需要预加载的资源列表
-            const criticalAssets = [
-                'assets/封面背景.jpg'
+            // 轮播图片列表
+            const carouselImages = [
+                'assets/DSC01458.JPG',
+                'assets/DSC01538.JPG',
+                'assets/DSC01545.JPG',
+                'assets/DSC01581.JPG',
+                'assets/DSC01692.JPG',
+                'assets/DSC01895.JPG',
+                'assets/DSC01951.JPG',
+                'assets/DSC01991.JPG',
+                'assets/DSC02022.JPG',
+                'assets/DSC02030.JPG'
             ];
 
-            let loaded = 0;
-            const total = criticalAssets.length;
+            // 总资源数 = 封面 + 背景音乐 + 轮播图片
+            const totalAssets = 1 + 1 + carouselImages.length;
+            let loadedCount = 0;
 
             // 更新进度
-            function updateProgress() {
-                const percent = Math.round((loaded / total) * 100);
+            function updateProgress(text) {
+                const percent = Math.round((loadedCount / totalAssets) * 100);
                 loadingProgress.textContent = percent + '%';
-            }
-
-            // 预加载单个资源
-            function preloadAsset(src) {
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        loaded++;
-                        updateProgress();
-                        resolve();
-                    };
-                    img.onerror = () => {
-                        loaded++;
-                        updateProgress();
-                        resolve(); // 即使失败也继续
-                    };
-                    img.src = src;
-                });
-            }
-
-            // 预加载关键资源
-            await Promise.all(criticalAssets.map(preloadAsset));
-
-            // 隐藏加载动画，显示封面
-            loadingScreen.classList.add('hidden');
-            cover.style.display = 'flex';
-
-            // 延迟加载轮播图片（懒加载）
-            setTimeout(() => {
-                initLazyLoading();
-            }, 500);
-        }
-
-        // ========== 懒加载初始化 ==========
-        function initLazyLoading() {
-            const lazyImages = document.querySelectorAll('.lazy-image');
-
-            // 加载当前和相邻的图片
-            function loadNearbyImages(currentIndex) {
-                const totalImages = lazyImages.length;
-
-                // 加载当前图片和前后各一张
-                for (let i = -1; i <= 1; i++) {
-                    const index = (currentIndex + i + totalImages) % totalImages;
-                    const img = lazyImages[index];
-
-                    if (img && !img.src) {
-                        img.src = img.dataset.src;
-                        img.onload = () => {
-                            img.classList.add('loaded');
-                        };
-                    }
+                if (text) {
+                    loadingText.textContent = text;
                 }
             }
 
-            // 初始加载前几张
-            loadNearbyImages(0);
-
-            // 监听轮播切换，加载相邻图片
-            const originalGoToSlide = window.goToSlide;
-            if (typeof goToSlide === 'function') {
-                // 包装原始函数，在切换时加载相邻图片
-                const newGoToSlide = function(index, instant) {
-                    originalGoToSlide(index, instant);
-                    loadNearbyImages(index >= 0 ? index : 0);
-                };
-                // 重新绑定按钮事件
-                document.getElementById('prevBtn').onclick = () => newGoToSlide(currentSlide - 1);
-                document.getElementById('nextBtn').onclick = () => newGoToSlide(currentSlide + 1);
+            // 加载单个资源
+            function loadAsset(src, type = 'image') {
+                return new Promise((resolve) => {
+                    if (type === 'image') {
+                        const img = new Image();
+                        img.onload = () => {
+                            loadedCount++;
+                            updateProgress();
+                            resolve(true);
+                        };
+                        img.onerror = () => {
+                            loadedCount++;
+                            updateProgress();
+                            resolve(false);
+                        };
+                        img.src = src;
+                    } else if (type === 'audio') {
+                        const audio = new Audio();
+                        audio.oncanplaythrough = () => {
+                            loadedCount++;
+                            updateProgress();
+                            resolve(true);
+                        };
+                        audio.onerror = () => {
+                            loadedCount++;
+                            updateProgress();
+                            resolve(false);
+                        };
+                        audio.src = src;
+                    }
+                });
             }
+
+            // ========== 优先级 1：封面背景 ==========
+            updateProgress('加载封面...');
+            await loadAsset('assets/封面背景.jpg', 'image');
+
+            // 封面加载完成，显示封面
+            loadingScreen.classList.add('hidden');
+            cover.style.display = 'flex';
+
+            // ========== 优先级 2：背景音乐 ==========
+            updateProgress('加载音乐...');
+            await loadAsset('assets/A_Little_Love.flac', 'audio');
+
+            // ========== 优先级 3：轮播图片（一张一张加载） ==========
+            const lazyImages = document.querySelectorAll('.lazy-image');
+
+            for (let i = 0; i < carouselImages.length; i++) {
+                updateProgress(`加载照片 ${i + 1}/${carouselImages.length}...`);
+                await loadAsset(carouselImages[i], 'image');
+
+                // 更新对应图片的 src
+                if (lazyImages[i]) {
+                    lazyImages[i].src = carouselImages[i];
+                    lazyImages[i].classList.add('loaded');
+                }
+            }
+
+            // ========== 优先级 4：视频（最后加载） ==========
+            updateProgress('加载视频...');
+            const video = document.getElementById('weddingVideo');
+            if (video) {
+                video.preload = 'auto';
+                // 视频不需要等待加载完成
+            }
+
+            // 所有资源加载完成
+            updateProgress('加载完成');
+            loadingText.textContent = '欢迎参加婚礼';
+
+            // 1秒后隐藏加载动画
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+            }, 1000);
         }
 
         // ========== 祝福墙功能 ==========
