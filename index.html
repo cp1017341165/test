@@ -57,8 +57,8 @@
             background-image: url('assets/封面背景.jpg');
             background-size: cover;
             background-position: center;
-            filter: blur(8px) brightness(0.9);
-            transform: scale(1.1);
+            filter: blur(3px) brightness(0.95);
+            transform: scale(1.05);
             z-index: -1;
         }
 
@@ -69,7 +69,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
             z-index: -1;
         }
 
@@ -299,7 +299,7 @@
 
         .photo-container {
             display: flex;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .photo-slide {
@@ -1120,7 +1120,9 @@
                     <button class="carousel-btn" id="nextBtn">❯</button>
                 </div>
             </div>
-            <div class="carousel-dots" id="carouselDots"></div>
+            <div class="carousel-dots" id="carouselDots">
+                <!-- 指示点由 JavaScript 动态生成 -->
+            </div>
         </section>
 
         <!-- 视频区 -->
@@ -1330,13 +1332,34 @@
             }
         }
 
-        // ========== 照片轮播 ==========
+        // ========== 照片轮播（无缝循环） ==========
         const photoContainer = document.getElementById('photoContainer');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const carouselDots = document.getElementById('carouselDots');
         let currentSlide = 0;
         const totalSlides = 10;
+        let isAnimating = false;
+
+        // 初始化无缝循环轮播
+        function initCarousel() {
+            const slides = photoContainer.querySelectorAll('.photo-slide');
+
+            // 克隆第一张和最后一张实现无缝循环
+            const firstClone = slides[0].cloneNode(true);
+            const lastClone = slides[slides.length - 1].cloneNode(true);
+
+            // 添加克隆节点
+            photoContainer.appendChild(firstClone);
+            photoContainer.insertBefore(lastClone, slides[0]);
+
+            // 设置初始位置（跳过前面的克隆节点）
+            photoContainer.style.transform = `translateX(-100%)`;
+            currentSlide = 0;
+
+            // 生成指示点
+            initDots();
+        }
 
         // 生成指示点
         function initDots() {
@@ -1352,18 +1375,55 @@
             }
         }
 
-        function goToSlide(index) {
-            if (index < 0) index = totalSlides - 1;
-            if (index >= totalSlides) index = 0;
+        function goToSlide(index, instant = false) {
+            if (isAnimating) return;
 
+            // 处理边界情况
+            if (index < -1) index = totalSlides - 1;
+            if (index > totalSlides) index = 0;
+
+            isAnimating = true;
             currentSlide = index;
-            photoContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // 计算实际位置（+1 是因为前面有克隆节点）
+            const targetPosition = index + 1;
+
+            if (instant) {
+                // 瞬间跳转（无动画）
+                photoContainer.style.transition = 'none';
+                photoContainer.style.transform = `translateX(-${targetPosition * 100}%)`;
+
+                // 强制重绘
+                photoContainer.offsetHeight;
+
+                // 恢复动画
+                photoContainer.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            } else {
+                photoContainer.style.transform = `translateX(-${targetPosition * 100}%)`;
+            }
 
             // 更新指示点
             const dots = document.querySelectorAll('.dot');
+            const displayIndex = ((index % totalSlides) + totalSlides) % totalSlides;
             dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === currentSlide);
+                dot.classList.toggle('active', i === displayIndex);
             });
+
+            // 动画结束后处理无缝跳转
+            setTimeout(() => {
+                isAnimating = false;
+
+                // 如果到了克隆的第一张，瞬间跳转到真实的第一张
+                if (index >= totalSlides) {
+                    currentSlide = 0;
+                    goToSlide(0, true);
+                }
+                // 如果到了克隆的最后一张，瞬间跳转到真实的最后一张
+                else if (index < 0) {
+                    currentSlide = totalSlides - 1;
+                    goToSlide(totalSlides - 1, true);
+                }
+            }, 600);
         }
 
         prevBtn.addEventListener('click', () => {
@@ -1374,8 +1434,8 @@
             goToSlide(currentSlide + 1);
         });
 
-        // 初始化指示点
-        initDots();
+        // 初始化轮播
+        initCarousel();
 
         // 自动轮播
         setInterval(() => {
