@@ -367,7 +367,7 @@
             object-fit: cover;
             display: block;
             background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 100%);
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
         }
 
         .photo-slide img.lazy-image {
@@ -376,6 +376,11 @@
 
         .photo-slide img.loaded {
             opacity: 1;
+        }
+
+        /* 图片加载占位 */
+        .photo-slide {
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 100%);
         }
 
         .photo-slide .photo-caption {
@@ -1405,7 +1410,7 @@
             }
         }
 
-        // ========== 照片轮播（无缝循环） ==========
+        // ========== 照片轮播（无缝循环 + 图片加载检查） ==========
         const photoContainer = document.getElementById('photoContainer');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
@@ -1413,6 +1418,10 @@
         let currentSlide = 0;
         const totalSlides = 10;
         let isAnimating = false;
+        let autoPlayTimer = null;
+
+        // 图片加载状态管理
+        const imageLoadStatus = {};
 
         // 初始化无缝循环轮播
         function initCarousel() {
@@ -1421,6 +1430,23 @@
             // 克隆第一张和最后一张实现无缝循环
             const firstClone = slides[0].cloneNode(true);
             const lastClone = slides[slides.length - 1].cloneNode(true);
+
+            // 设置克隆节点的图片 src（从 data-src 加载）
+            const firstCloneImg = firstClone.querySelector('.lazy-image');
+            const lastCloneImg = lastClone.querySelector('.lazy-image');
+
+            if (firstCloneImg) {
+                const src = firstCloneImg.dataset.src || firstCloneImg.src;
+                firstCloneImg.src = src;
+                firstCloneImg.classList.remove('lazy-image');
+                firstCloneImg.classList.add('loaded');
+            }
+            if (lastCloneImg) {
+                const src = lastCloneImg.dataset.src || lastCloneImg.src;
+                lastCloneImg.src = src;
+                lastCloneImg.classList.remove('lazy-image');
+                lastCloneImg.classList.add('loaded');
+            }
 
             // 添加克隆节点
             photoContainer.appendChild(firstClone);
@@ -1446,6 +1472,33 @@
                 });
                 carouselDots.appendChild(dot);
             }
+        }
+
+        // 检查图片是否加载完成
+        function isImageLoaded(index) {
+            const normalizedIndex = ((index % totalSlides) + totalSlides) % totalSlides;
+            return imageLoadStatus[normalizedIndex] === true;
+        }
+
+        // 标记图片加载完成
+        function markImageLoaded(index) {
+            const normalizedIndex = ((index % totalSlides) + totalSlides) % totalSlides;
+            imageLoadStatus[normalizedIndex] = true;
+        }
+
+        // 获取下一个要显示的索引
+        function getNextIndex(direction) {
+            if (direction > 0) {
+                return currentSlide + 1;
+            } else {
+                return currentSlide - 1;
+            }
+        }
+
+        // 检查是否可以切换
+        function canGoToSlide(targetIndex) {
+            const normalizedIndex = ((targetIndex % totalSlides) + totalSlides) % totalSlides;
+            return isImageLoaded(normalizedIndex);
         }
 
         function goToSlide(index, instant = false) {
@@ -1499,21 +1552,67 @@
             }, 600);
         }
 
+        // 带图片检查的轮播切换
+        function goToSlideWithCheck(direction) {
+            const nextIndex = getNextIndex(direction);
+            const normalizedIndex = ((nextIndex % totalSlides) + totalSlides) % totalSlides;
+
+            // 如果下一张图片已加载，直接切换
+            if (isImageLoaded(normalizedIndex)) {
+                goToSlide(nextIndex);
+            } else {
+                // 等待图片加载完成后再切换
+                waitForImageAndSlide(normalizedIndex, nextIndex);
+            }
+        }
+
+        // 等待图片加载完成后切换
+        function waitForImageAndSlide(normalizedIndex, targetIndex) {
+            const maxWait = 3000; // 最长等待 3 秒
+            const startTime = Date.now();
+
+            function check() {
+                if (isImageLoaded(normalizedIndex)) {
+                    goToSlide(targetIndex);
+                } else if (Date.now() - startTime < maxWait) {
+                    requestAnimationFrame(check);
+                } else {
+                    // 超时后强制切换
+                    goToSlide(targetIndex);
+                }
+            }
+
+            check();
+        }
+
         prevBtn.addEventListener('click', () => {
-            goToSlide(currentSlide - 1);
+            resetAutoPlay();
+            goToSlideWithCheck(-1);
         });
 
         nextBtn.addEventListener('click', () => {
-            goToSlide(currentSlide + 1);
+            resetAutoPlay();
+            goToSlideWithCheck(1);
         });
 
         // 初始化轮播
         initCarousel();
 
         // 自动轮播
-        setInterval(() => {
-            goToSlide(currentSlide + 1);
-        }, 4000);
+        function startAutoPlay() {
+            autoPlayTimer = setInterval(() => {
+                goToSlideWithCheck(1);
+            }, 4000);
+        }
+
+        function resetAutoPlay() {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+            }
+            startAutoPlay();
+        }
+
+        startAutoPlay();
 
         // ========== 滚动动画 ==========
         const animateElements = document.querySelectorAll('.animate-on-scroll');
@@ -1652,19 +1751,24 @@
 
             // ========== 优先级 2：背景音乐 ==========
             updateProgress('加载音乐...');
-            await loadAsset('assets/A_Little_Love.flac', 'audio');
+            await loadAsset('assets/A Little Love.mp3', 'audio');
 
             // ========== 优先级 3：轮播图片（一张一张加载） ==========
             const lazyImages = document.querySelectorAll('.lazy-image');
 
             for (let i = 0; i < carouselImages.length; i++) {
                 updateProgress(`加载照片 ${i + 1}/${carouselImages.length}...`);
-                await loadAsset(carouselImages[i], 'image');
+                const success = await loadAsset(carouselImages[i], 'image');
 
                 // 更新对应图片的 src
                 if (lazyImages[i]) {
                     lazyImages[i].src = carouselImages[i];
                     lazyImages[i].classList.add('loaded');
+                }
+
+                // 标记图片加载状态
+                if (success) {
+                    markImageLoaded(i);
                 }
             }
 
