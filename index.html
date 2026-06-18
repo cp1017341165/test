@@ -31,6 +31,58 @@
             min-height: 100vh;
         }
 
+        /* ========== 加载动画 ========== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFF0F5 50%, #FFFACD 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-ring {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 182, 193, 0.3);
+            border-top-color: var(--deep-pink);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .loading-progress {
+            color: var(--deep-pink);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
         /* ========== 开场遮罩 ========== */
         .cover-overlay {
             position: fixed;
@@ -312,6 +364,16 @@
             height: 400px;
             object-fit: cover;
             display: block;
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 100%);
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-slide img.lazy-image {
+            opacity: 0;
+        }
+
+        .photo-slide img.loaded {
+            opacity: 1;
         }
 
         .photo-slide .photo-caption {
@@ -1008,8 +1070,17 @@
     </style>
 </head>
 <body>
+    <!-- ========== 加载动画 ========== -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-ring"></div>
+            <div class="loading-text">加载中...</div>
+            <div class="loading-progress" id="loadingProgress">0%</div>
+        </div>
+    </div>
+
     <!-- ========== 开场遮罩 ========== -->
-    <div class="cover-overlay" id="cover">
+    <div class="cover-overlay" id="cover" style="display: none;">
         <div class="cover-bg"></div>
         <div class="cover-content">
             <h1>我们结婚啦</h1>
@@ -1075,43 +1146,43 @@
             <div class="photo-carousel animate-on-scroll">
                 <div class="photo-container" id="photoContainer">
                     <div class="photo-slide">
-                        <img src="assets/DSC01458.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01458.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">我们的故事，从这里开始</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC01538.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01538.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">执子之手，与子偕老</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC01545.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01545.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">愿得一人心，白首不相离</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC01581.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01581.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">最美的时光，遇见最好的你</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC01692.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01692.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">相守一生，相伴永远</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC01895.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01895.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">爱的旅程，与你同行</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC01951.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01951.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">携手共度，每一个明天</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC01991.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC01991.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">因为有你，生活更美好</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC02022.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC02022.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">爱你，是我做过最好的事</div>
                     </div>
                     <div class="photo-slide">
-                        <img src="assets/DSC02030.JPG" alt="甜蜜瞬间">
+                        <img data-src="assets/DSC02030.JPG" alt="甜蜜瞬间" class="lazy-image">
                         <div class="photo-caption">余生，请多指教</div>
                     </div>
                 </div>
@@ -1464,13 +1535,8 @@
             // 强制滚动到顶部，防止 iframe 抢焦
             window.scrollTo(0, 0);
 
-            // 预加载图片
-            const images = document.querySelectorAll('img');
-            images.forEach(img => {
-                const src = img.src;
-                const newImg = new Image();
-                newImg.src = src;
-            });
+            // 预加载关键资源（封面背景）
+            preloadCriticalAssets();
 
             // ========== 视频播放时控制背景音乐音量 ==========
             const weddingVideo = document.getElementById('weddingVideo');
@@ -1506,6 +1572,96 @@
                 }
             });
         });
+
+        // ========== 预加载关键资源 ==========
+        async function preloadCriticalAssets() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingProgress = document.getElementById('loadingProgress');
+            const cover = document.getElementById('cover');
+
+            // 需要预加载的资源列表
+            const criticalAssets = [
+                'assets/封面背景.jpg'
+            ];
+
+            let loaded = 0;
+            const total = criticalAssets.length;
+
+            // 更新进度
+            function updateProgress() {
+                const percent = Math.round((loaded / total) * 100);
+                loadingProgress.textContent = percent + '%';
+            }
+
+            // 预加载单个资源
+            function preloadAsset(src) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loaded++;
+                        updateProgress();
+                        resolve();
+                    };
+                    img.onerror = () => {
+                        loaded++;
+                        updateProgress();
+                        resolve(); // 即使失败也继续
+                    };
+                    img.src = src;
+                });
+            }
+
+            // 预加载关键资源
+            await Promise.all(criticalAssets.map(preloadAsset));
+
+            // 隐藏加载动画，显示封面
+            loadingScreen.classList.add('hidden');
+            cover.style.display = 'flex';
+
+            // 延迟加载轮播图片（懒加载）
+            setTimeout(() => {
+                initLazyLoading();
+            }, 500);
+        }
+
+        // ========== 懒加载初始化 ==========
+        function initLazyLoading() {
+            const lazyImages = document.querySelectorAll('.lazy-image');
+
+            // 加载当前和相邻的图片
+            function loadNearbyImages(currentIndex) {
+                const totalImages = lazyImages.length;
+
+                // 加载当前图片和前后各一张
+                for (let i = -1; i <= 1; i++) {
+                    const index = (currentIndex + i + totalImages) % totalImages;
+                    const img = lazyImages[index];
+
+                    if (img && !img.src) {
+                        img.src = img.dataset.src;
+                        img.onload = () => {
+                            img.classList.add('loaded');
+                        };
+                    }
+                }
+            }
+
+            // 初始加载前几张
+            loadNearbyImages(0);
+
+            // 监听轮播切换，加载相邻图片
+            const originalGoToSlide = window.goToSlide;
+            if (typeof goToSlide === 'function') {
+                // 包装原始函数，在切换时加载相邻图片
+                const newGoToSlide = function(index, instant) {
+                    originalGoToSlide(index, instant);
+                    loadNearbyImages(index >= 0 ? index : 0);
+                };
+                // 重新绑定按钮事件
+                document.getElementById('prevBtn').onclick = () => newGoToSlide(currentSlide - 1);
+                document.getElementById('nextBtn').onclick = () => newGoToSlide(currentSlide + 1);
+            }
+        }
 
         // ========== 祝福墙功能 ==========
         const WISHES_API = '/api/wishes';  // 使用 Pages Functions，相对路径
